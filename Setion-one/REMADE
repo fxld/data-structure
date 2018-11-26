@@ -1,0 +1,10 @@
+Minheap is a data-structure what is a complete two binary tree.
+So it has all the properties of a complete binary tree.
+Just like the tree node of son is easy to search from (N+1)/2.
+If we know the property,we can easy to complete the Minheap in array.
+About the Haffam,we just take out the RootNode where in the Minheap and complete the Haffam tree.
+
+
+
+
+
