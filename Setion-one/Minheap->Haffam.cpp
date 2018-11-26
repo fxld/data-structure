@@ -137,7 +137,7 @@ Huffman buildTree(Heap h,int n)
     return temp;
 }
 
-void MinCalendar(Huffman t,int weight)  //中序历遍哈夫曼树
+void MidCalendar(Huffman t,int weight)  //中序历遍哈夫曼树
 {
     stack<treenode*> Sstack;
     Sstack.push(t);
