@@ -1,3 +1,11 @@
+The properties of the binary search tree are as follows:
+1. All non-leaf nodes have at most two sons (Left and Right);
+2. All nodes store a keyword;
+3. The left pointer of a non-leaf node points to a subtree smaller than its keyword, 
+and the right pointer points to a subtree larger than its keyword.
 Establishing Binary Search Tree Recursive and Non-Recursive
 Delete nodes recursively and non-recursively
-There may be bugs in deleting non-recursive versions of nodes
+If a binary search tree is built by binary recursion, it is probably AVL tree, but if it is built by inset, 
+it is an unbalanced binary search tree
+If you need to delete and add nodes, then after the operation, 
+you need a binary tree or satisfy the nature of a binary search tree.
