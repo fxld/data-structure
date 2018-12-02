@@ -220,7 +220,7 @@ void Delete2(pTree &temp,int key) //非递归版本
         parent->right=p->left;
         return ;
     }
-    else if(p->left==NULL&&p->right->left!=NULL)
+    else if(p->right!=NULL&&p->right->left!=NULL)
     {
         parent=p;
         p=p->right;
@@ -260,16 +260,16 @@ void Delete2(pTree &temp,int key) //非递归版本
             return ;
         }
     }
-    else if(p->left==NULL&&p->right->left==NULL&&p!=temp)
+    else if(p->left==NULL&&p->right!=NULL)
     {
         p=p->right;
         if (flag)
         {
-            parent->right=p3->right;
+            parent->right=p;
         }
         else if(flag==0)
         {
-            parent->left=p3->right;
+            parent->left=p;
         }
         return ;
     }
@@ -284,6 +284,16 @@ void Delete2(pTree &temp,int key) //非递归版本
             parent->left=NULL;
             return ;
         }
+    }
+    else if(p->left==NULL&&p->right==NULL&&p==temp)
+    {
+        delete temp;
+    }
+    else if(p->left->right==NULL&&p->right->left==NULL&&p==temp)
+    {
+        p->left->right=p->right;
+        temp=p->left;
+        return ;
     }
 }
 
