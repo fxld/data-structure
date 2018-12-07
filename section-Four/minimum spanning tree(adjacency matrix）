@@ -1,0 +1,309 @@
+#include <iostream>
+#include <deque>
+#include <stack>
+#include <vector>
+
+using namespace std;
+
+typedef class edge* Pedge;
+typedef class Graph* Pgraph;
+#define Visit 1;
+#define UnVisit 0;
+#define Infinity 65536;
+
+class edge{
+private:
+    int to,from,weight;
+public:
+    edge(){
+        to=-1;
+        weight=0;
+        from=-1;
+    }
+    edge(int To,int From,int Weight){
+        to=To;
+        from=From;
+        weight=Weight;
+    }
+    int getTo(){
+        return to;
+    }
+    int getWeight(){
+        return weight;
+    }
+    int getFrom(){
+        return from;
+    }
+    void setTo(int To){
+        to=To;
+    }
+    void setWeight(int Weight){
+        weight=Weight;
+    }
+    void setFrom(int From){
+        from=From;
+    }
+};
+
+class Graph{
+private:
+    int **maxtic;
+    int *indegree;
+    int *mark;
+    int numEdge;
+    int numVectic;
+public:
+    Graph(){
+        maxtic=NULL;
+        indegree=NULL;
+        mark=NULL;
+        numEdge=0;
+        numVectic=0;
+    }
+    Graph(int NumVectic){
+        numVectic=NumVectic;
+        mark=new int [numVectic+1];
+        indegree=new int [numVectic+1];
+        maxtic=new int *[numVectic+1];
+        for (int i=1; i<=numVectic; i++) {
+            mark[i]=0;
+            indegree[i]=0;
+             maxtic[i]=new int [numVectic+1];
+            for (int j=1; j<=numVectic; j++) {
+                maxtic[i][j]=Infinity;
+            }
+        }
+    }
+    void setEdge(int to,int from,int weight){
+        maxtic[from][to]=weight;
+        indegree[to]++;
+        numEdge++;
+    }
+    int getEdge(int to,int from){
+        return maxtic[from][to];
+    }
+    int getVectic(){
+        return numVectic;
+    }
+    int getNumEdge(){
+        return numEdge;
+    }
+    int getIndegree(int to){
+        return indegree[to];
+    }
+    void setIndegree(int to){
+        indegree[to]--;
+    }
+    void setMark(int from){
+        mark[from]=UnVisit;
+    }
+    void setVisit(int from){
+        mark[from]=Visit;
+    }
+    bool is_visit(int from){
+        if (mark[from]==1) {
+            return true;
+        }
+        return false;
+    }
+    Pedge firstEdge(int from)
+    {
+        Pedge p=NULL;
+        int temp=Infinity;
+        for (int i=1; i<=numVectic; i++){
+            if (maxtic[from][i]!=temp){
+                p=new edge(i,from,maxtic[from][i]);
+                break;
+            }
+        }
+        return p;
+    }
+    Pedge nextEdge(int to,int from){
+        Pedge p=NULL;
+        for (int i=to; i<=numVectic; i++){
+            if (maxtic[from][to+1]!=0)
+                p=new edge(to+1,from,maxtic[from][to+1]);
+        }
+        return p;
+    }
+};
+void InsertSort(Pedge mest[],int count){
+    Pedge p;
+    int j,i;
+    for (j=1; j<count ; j++) {
+        p=new edge(mest[j]->getTo(),mest[j]->getFrom(),mest[j]->getWeight());
+        for (i=j-1;i>=0 ; i--) {
+            if (p->getWeight()>mest[i]->getWeight()) {
+                break;
+            }
+            mest[i+1]->setFrom(mest[i]->getFrom());
+            mest[i+1]->setTo(mest[i]->getTo());
+            mest[i+1]->setWeight(mest[i]->getWeight());
+        }
+        mest[i+1]->setWeight(p->getWeight());
+        mest[i+1]->setTo(p->getTo());
+        mest[i+1]->setFrom(p->getFrom());
+    }
+    }
+
+void Prim(Graph &G,int from,Pedge *&mst){
+    vector<int> tempVector;
+    vector<int>::iterator temIterator;
+    mst=new Pedge[G.getVectic()];
+    Pedge p;
+    int tempMin=Infinity;
+    int temp=Infinity;
+    int tempTo=0;
+    int count=0;
+    int tempfrom=0;
+    for (int i=1; i<G.getVectic(); i++) {
+        G.setMark(i);
+    }
+    tempVector.push_back(from);
+    G.setVisit(from);
+    while (count!=G.getVectic()-1) {
+      for(temIterator=tempVector.begin();temIterator!=tempVector.end();temIterator++){
+        from=*temIterator;
+        for (p=G.firstEdge(from); p!=NULL; p=G.nextEdge(p->getTo(), p->getFrom())) {
+            if (p->getWeight()<tempMin&&!G.is_visit(p->getTo())) {
+               tempMin=p->getWeight();
+               tempTo=p->getTo();
+               tempfrom=from;
+          }
+       }
+    }
+        if (tempMin!=temp) {
+            mst[count]=new edge(tempTo,tempfrom,tempMin);
+            count++;
+            tempVector.push_back(tempTo);
+            G.setVisit(tempTo);
+        }
+        else
+            break;
+        tempMin=temp;
+    }
+    for (int i=1; i<=G.getVectic(); i++) {
+        if (!G.is_visit(i)) {
+            cout<<i<<"相对于最小生成树孤立"<<endl;
+        }
+    }
+}
+
+int findRoot(int node,int *a){
+    stack<int> Stack;
+    if (a[node]!=node) {
+        Stack.push(a[node]);
+    }
+    while (!Stack.empty()) {
+        int b=Stack.top();
+        Stack.pop();
+        if (a[b]==b) {
+            return b;
+        }
+        else
+            Stack.push(a[b]);
+    }
+    return 0;
+}
+
+void Kruskal(Graph &G,Pedge *&mst){
+    Pedge *mest;
+    int *Rearray;
+    Rearray=new int [G.getVectic()+1];
+    int Rearray2[100]={0,0};
+    mest=new Pedge[G.getNumEdge()];
+    Pedge mest2[100];
+    mst=new Pedge[G.getNumEdge()];
+    Pedge mst2[100];
+    int temp=Infinity;
+    int count=0;
+    int re=0;
+    int re2=0;
+    int root;
+    
+    for (int i=1; i<=G.getVectic(); i++) {
+        for (int j=1; j<=G.getVectic(); j++) {
+            if (G.getEdge(j, i)>0&&G.getEdge(j, i)<temp){
+                mest2[count]=new edge(j,i,G.getEdge(j, i));
+                count++;
+            }
+        }
+    }
+    
+    InsertSort(mest2, count);
+    
+    for (int i=1; i<=G.getVectic(); i++) {
+        Rearray2[i]=i;
+    }
+    
+    
+    while (re2<G.getVectic()-1) {
+        
+        if (Rearray2[mest2[re]->getFrom()]==mest2[re]->getFrom()) {
+            if (Rearray2[mest2[re]->getTo()]==mest2[re]->getTo()) {
+                Rearray2[mest2[re]->getTo()]=mest2[re]->getFrom();
+                mst2[re2]=new edge(mest2[re]->getTo(),mest2[re]->getFrom(),mest2[re]->getWeight());
+                re2++;
+            }
+            else if(Rearray2[mest2[re]->getTo()]!=mest2[re]->getTo()){
+                if(Rearray2[mest2[re]->getTo()]==Rearray2[mest2[re]->getFrom()]){
+                continue;
+                }
+                else if(Rearray2[mest2[re]->getTo()]!=Rearray2[mest2[re]->getFrom()]){
+                    if (findRoot(mest2[re]->getTo(), Rearray2)&&findRoot(mest2[re]->getTo(), Rearray2)!=Rearray2[mest2[re]->getFrom()]) {
+                        if (findRoot(mest2[re]->getTo(), Rearray2)<Rearray2[mest2[re]->getFrom()]) {
+                            for (int i=1; i<=G.getVectic(); i++) {
+                                if (Rearray2[i]==mest2[re]->getFrom()) {
+                                    Rearray2[i]=findRoot(mest2[re]->getTo(), Rearray2);
+                                }
+                            }
+                        }
+                        mst2[re2]=new edge(mest2[re]->getTo(),mest2[re]->getFrom(),mest2[re]->getWeight());
+                        re2++;
+                    }
+                }
+            }
+        }
+        else{
+            root=findRoot(mest2[re]->getFrom(), Rearray2);
+            if (Rearray2[mest2[re]->getTo()]==mest2[re]->getTo()&&root!=mest2[re]->getTo()) {
+                Rearray2[mest2[re]->getTo()]=mest2[re]->getFrom();
+                mst2[re2]=new edge(mest2[re]->getTo(),mest2[re]->getFrom(),mest2[re]->getWeight());
+                re2++;
+            }
+            else if(Rearray2[mest2[re]->getTo()]!=mest2[re]->getTo()){
+                if (findRoot(mest2[re]->getTo(), Rearray2)&&findRoot(mest2[re]->getTo(), Rearray2)!=root) {
+                    Rearray2[findRoot(mest2[re]->getTo(), Rearray2)]=root;
+                    Rearray2[mest2[re]->getTo()]=root;
+                    mst2[re2]=new edge(mest2[re]->getTo(),mest2[re]->getFrom(),mest2[re]->getWeight());
+                    re2++;
+                    
+                }
+            }
+        }
+        re++;
+    }
+    for(int i=0;i<re2;i++)
+    {
+        mst[i]=mst2[i];
+    }
+    
+}
+    
+
+int main(){
+    int NumEdge,NumVictic;
+    int from,to,weight;
+    cin>>NumEdge>>NumVictic;
+    Graph G(NumVictic);
+    Pedge *p=NULL;
+    for(int i=1;i<=NumEdge;i++){
+        cin>>from>>to>>weight;
+        G.setEdge(to, from, weight);
+    }
+    Kruskal(G, p);
+    for (int i=0; i<G.getVectic()-1; i++) {
+        cout<<p[i]->getFrom()<<"->"<<p[i]->getTo()<<endl;
+    }
+    return 0;
+}
