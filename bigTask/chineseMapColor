@@ -1,0 +1,296 @@
+//
+//  main.cpp
+//  中国地图染色
+//
+//  Created by dream on 2018/12/16.
+//  Copyright © 2018 dream. All rights reserved.
+//
+
+#include <iostream>
+#include <string>
+#include <stack>
+#include <map>
+
+using namespace std;
+
+const int 黑龙江=1;
+const int 吉林=2;
+const int 辽宁=3;
+const int 内蒙古=4;
+const int 北京=5;
+const int 天津=6;
+const int 河北=7;
+const int 河南=8;
+const int 山西=9;
+const int 山东=10;
+const int 陕西=11;
+const int 宁夏=12;
+const int 甘肃=13;
+const int 新疆=14;
+const int 青海=15;
+const int 西藏=16;
+const int 四川=17;
+const int 湖北=18;
+const int 安徽=19;
+const int 江苏=20;
+const int 浙江=21;
+const int 江西=22;
+const int 湖南=23;
+const int 重庆=24;
+const int 贵州=25;
+const int 云南=26;
+const int 广西=27;
+const int 广东=28;
+const int 海南=29;
+const int 香港=30;
+const int 澳门=31;
+const int 福建=32;
+const int 上海=33;
+const int 台湾=34;
+
+string Scolor[4]={"red","green","yellow","blue"};
+
+class Edge{
+public:
+    int from;
+    int to;
+    int record;
+    string color;
+    Edge(){
+        from=0;
+        to=0;
+        record=-1;
+        color="无色";
+    }
+    int returnfrom(){
+        return from;
+    }
+    int returnto(){
+        return to;
+    }
+};
+
+class Map{
+public:
+    Edge maxtic[35][35];
+    Map(){
+        for (int i=0; i<35; i++) {
+            for (int j=0; j<35; j++) {
+                maxtic[i][j].record=-1;
+                maxtic[i][j].color="无色";
+            }
+        }
+    }
+    void InputChinaMap(){
+        maxtic[黑龙江][吉林].record=0;
+        maxtic[黑龙江][内蒙古].record=0;
+        maxtic[吉林][黑龙江].record=0;
+        maxtic[吉林][辽宁].record=0;
+        maxtic[吉林][内蒙古].record=0;
+        maxtic[辽宁][吉林].record=0;
+        maxtic[辽宁][内蒙古].record=0;
+        maxtic[辽宁][河北].record=0;
+        maxtic[河北][辽宁].record=0;
+        maxtic[河北][内蒙古].record=0;
+        maxtic[河北][天津].record=0;
+        maxtic[河北][北京].record=0;
+        maxtic[河北][山西].record=0;
+        maxtic[河北][山东].record=0;
+        maxtic[河北][河南].record=0;
+        maxtic[内蒙古][黑龙江].record=0;
+        maxtic[内蒙古][吉林].record=0;
+        maxtic[内蒙古][辽宁].record=0;
+        maxtic[内蒙古][河北].record=0;
+        maxtic[内蒙古][山西].record=0;
+        maxtic[内蒙古][陕西].record=0;
+        maxtic[内蒙古][宁夏].record=0;
+        maxtic[内蒙古][甘肃].record=0;
+        maxtic[北京][天津].record=0;
+        maxtic[北京][河北].record=0;
+        maxtic[天津][北京].record=0;
+        maxtic[天津][河北].record=0;
+        maxtic[山西][河北].record=0;
+        maxtic[山西][内蒙古].record=0;
+        maxtic[山西][陕西].record=0;
+        maxtic[山西][河南].record=0;
+        maxtic[山东][河北].record=0;
+        maxtic[山东][河南].record=0;
+        maxtic[山东][江苏].record=0;
+        maxtic[陕西][山西].record=0;
+        maxtic[陕西][内蒙古].record=0;
+        maxtic[陕西][宁夏].record=0;
+        maxtic[陕西][甘肃].record=0;
+        maxtic[陕西][四川].record=0;
+        maxtic[陕西][重庆].record=0;
+        maxtic[陕西][湖北].record=0;
+        maxtic[陕西][河南].record=0;
+        maxtic[宁夏][内蒙古].record=0;
+        maxtic[宁夏][陕西].record=0;
+        maxtic[宁夏][甘肃].record=0;
+        maxtic[青海][四川].record=0;
+        maxtic[青海][西藏].record=0;
+        maxtic[青海][新疆].record=0;
+        maxtic[青海][甘肃].record=0;
+        maxtic[四川][重庆].record=0;
+        maxtic[四川][贵州].record=0;
+        maxtic[四川][云南].record=0;
+        maxtic[四川][西藏].record=0;
+        maxtic[四川][青海].record=0;
+        maxtic[四川][甘肃].record=0;
+        maxtic[四川][陕西].record=0;
+        maxtic[重庆][湖北].record=0;
+        maxtic[重庆][湖南].record=0;
+        maxtic[重庆][贵州].record=0;
+        maxtic[重庆][四川].record=0;
+        maxtic[重庆][陕西].record=0;
+        maxtic[贵州][湖南].record=0;
+        maxtic[贵州][广西].record=0;
+        maxtic[贵州][云南].record=0;
+        maxtic[贵州][四川].record=0;
+        maxtic[贵州][重庆].record=0;
+        maxtic[湖北][河南].record=0;
+        maxtic[湖北][安徽].record=0;
+        maxtic[湖北][江西].record=0;
+        maxtic[湖北][湖南].record=0;
+        maxtic[湖北][重庆].record=0;
+        maxtic[湖南][湖北].record=0;
+        maxtic[湖南][江西].record=0;
+        maxtic[湖南][广东].record=0;
+        maxtic[湖南][广西].record=0;
+        maxtic[湖南][贵州].record=0;
+        maxtic[湖南][重庆].record=0;
+        maxtic[江西][安徽].record=0;
+        maxtic[江西][浙江].record=0;
+        maxtic[江西][福建].record=0;
+        maxtic[江西][广东].record=0;
+        maxtic[江西][湖南].record=0;
+        maxtic[江西][湖北].record=0;
+        maxtic[安徽][山东].record=0;
+        maxtic[安徽][江苏].record=0;
+        maxtic[安徽][浙江].record=0;
+        maxtic[安徽][江西].record=0;
+        maxtic[安徽][湖北].record=0;
+        maxtic[安徽][河南].record=0;
+        maxtic[河南][河北].record=0;
+        maxtic[河南][山东].record=0;
+        maxtic[河南][安徽].record=0;
+        maxtic[河南][湖北].record=0;
+        maxtic[河南][陕西].record=0;
+        maxtic[甘肃][新疆].record=0;
+        maxtic[甘肃][青海].record=0;
+        maxtic[甘肃][四川].record=0;
+        maxtic[甘肃][陕西].record=0;
+        maxtic[甘肃][宁夏].record=0;
+        maxtic[甘肃][内蒙古].record=0;
+        maxtic[新疆][西藏].record=0;
+        maxtic[新疆][青海].record=0;
+        maxtic[新疆][甘肃].record=0;
+        maxtic[西藏][云南].record=0;
+        maxtic[西藏][四川].record=0;
+        maxtic[西藏][青海].record=0;
+        maxtic[西藏][新疆].record=0;
+        maxtic[云南][广西].record=0;
+        maxtic[云南][贵州].record=0;
+        maxtic[云南][四川].record=0;
+        maxtic[云南][西藏].record=0;
+        maxtic[广西][广东].record=0;
+        maxtic[广西][湖南].record=0;
+        maxtic[广西][贵州].record=0;
+        maxtic[广西][云南].record=0;
+        maxtic[香港][广东].record=0;
+        maxtic[澳门][广东].record=0;
+        maxtic[广东][福建].record=0;
+        maxtic[广东][江西].record=0;
+        maxtic[广东][湖南].record=0;
+        maxtic[广东][广西].record=0;
+        maxtic[广东][香港].record=0;
+        maxtic[广东][澳门].record=0;
+        maxtic[福建][广东].record=0;
+        maxtic[福建][浙江].record=0;
+        maxtic[福建][江西].record=0;
+        maxtic[浙江][上海].record=0;
+        maxtic[浙江][江西].record=0;
+        maxtic[浙江][福建].record=0;
+        maxtic[浙江][安徽].record=0;
+        maxtic[浙江][江苏].record=0;
+        maxtic[上海][江苏].record=0;
+        maxtic[上海][浙江].record=0;
+        maxtic[江苏][山东].record=0;
+        maxtic[江苏][安徽].record=0;
+        maxtic[江苏][浙江].record=0;
+        maxtic[江苏][上海].record=0;
+    }
+};
+
+bool IsColorSame(Map &m,int i){
+    for (int j=1; j<35; j++) {
+        if (m.maxtic[i][i].color==m.maxtic[i][j].color&&m.maxtic[i][j].record==0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+void dyEingList(Map &m,int i,string c){
+    for (int j=1; j<35; j++) {
+        m.maxtic[j][i].color=c;
+    }
+}
+
+void dyEing(Map &m){
+    int count=1;
+    int count2=1;
+    Edge *p=&m.maxtic[1][1];
+    dyEingList(m, count2,Scolor[0]);
+    stack<Edge*> Sstack;
+    Sstack.push(p);
+    while (count2<=34) {
+        p=Sstack.top();
+        if (!IsColorSame(m, count2)) {
+            count2++;
+            if (count2==35) {
+                break;
+            }
+            dyEingList(m, count2, Scolor[0]);
+            Sstack.push(&m.maxtic[count2][count2]);
+            count=1;
+        }
+        else{
+            if (count<4) {
+                dyEingList(m, count2, Scolor[count]);
+                count++;
+            }
+            else{
+                dyEingList(m, count2, "无色");
+                Sstack.pop();
+                count2--;
+                p=Sstack.top();
+                for (int i=0; i<4; i++) {
+                    if (p->color==Scolor[i]&&i<3) {
+                         dyEingList(m, count2, Scolor[i+1]);
+                        Sstack.pop();
+                        Sstack.push(&m.maxtic[count2][count2]);
+                        count=i+1;
+                        break;
+                    }
+                    else if(p->color==Scolor[i]&&i==3){
+                         dyEingList(m, count2, Scolor[0]);
+                        Sstack.pop();
+                        Sstack.push(&m.maxtic[count2][count2]);
+                        count=1;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+int main(int argc, const char * argv[]) {
+    Map m;
+    m.InputChinaMap();
+    dyEing(m);
+    for (int i=1; i<35; i++) {
+        cout<<m.maxtic[i][i].color<<" "<<i<<endl;
+    }
+}
